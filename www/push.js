@@ -4,22 +4,23 @@
 * DO NOT EDIT IT DIRECTLY
 * 
 * Edit the JS source file src/js/push.js
-**/'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+**/
+"use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/* global cordova:false */
-/* globals window */
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 /*!
  * Module dependencies.
  */
-
 var exec = cordova.require('cordova/exec');
 
-var PushNotification = function () {
+var PushNotification =
+/*#__PURE__*/
+function () {
   /**
    * PushNotification constructor.
    *
@@ -35,69 +36,49 @@ var PushNotification = function () {
       registration: [],
       notification: [],
       error: []
-    };
+    }; // require options parameter
 
-    // require options parameter
     if (typeof options === 'undefined') {
       throw new Error('The options argument is required.');
-    }
+    } // store the options to this object instance
 
-    // store the options to this object instance
-    this.options = options;
 
-    // triggered on registration and notification
+    this.options = options; // triggered on registration and notification
+
     var success = function success(result) {
       if (result && typeof result.registrationId !== 'undefined') {
         _this.emit('registration', result);
       } else if (result && result.additionalData && typeof result.additionalData.actionCallback !== 'undefined') {
-        var executeFuctionOrEmitEventByName = function executeFuctionOrEmitEventByName(functionName, context) {
-          for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-            args[_key - 2] = arguments[_key];
-          }
-
-          var namespaces = functionName.split('.');
-          var func = namespaces.pop();
-          for (var i = 0; i < namespaces.length; i++) {
-            context = context[namespaces[i]];
-          }
-
-          if (typeof context[func] === 'function') {
-            context[func].call(context, args);
-          } else {
-            _this.emit(functionName, args);
-          }
-        };
-
-        executeFuctionOrEmitEventByName(result.additionalData.actionCallback, window, result);
+        _this.emit(result.additionalData.actionCallback, result);
       } else if (result) {
         _this.emit('notification', result);
       }
-    };
+    }; // triggered on error
 
-    // triggered on error
+
     var fail = function fail(msg) {
       var e = typeof msg === 'string' ? new Error(msg) : msg;
-      _this.emit('error', e);
-    };
 
-    // wait at least one process tick to allow event subscriptions
+      _this.emit('error', e);
+    }; // wait at least one process tick to allow event subscriptions
+
+
     setTimeout(function () {
       exec(success, fail, 'PushNotification', 'init', [options]);
     }, 10);
   }
-
   /**
    * Unregister from push notifications
    */
 
 
   _createClass(PushNotification, [{
-    key: 'unregister',
+    key: "unregister",
     value: function unregister(successCallback) {
       var _this2 = this;
 
       var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      var options = arguments[2];
+      var options = arguments.length > 2 ? arguments[2] : undefined;
 
       if (typeof errorCallback !== 'function') {
         console.log('PushNotification.unregister failure: failure parameter not a function');
@@ -105,7 +86,7 @@ var PushNotification = function () {
       }
 
       if (typeof successCallback !== 'function') {
-        console.log('PushNotification.unregister failure: success callback parameter ' + ' must be a function');
+        console.log('PushNotification.unregister failure: success callback parameter must be a function');
         return;
       }
 
@@ -117,12 +98,12 @@ var PushNotification = function () {
             error: []
           };
         }
+
         successCallback();
       };
 
       exec(cleanHandlersAndPassThrough, errorCallback, 'PushNotification', 'unregister', [options]);
     }
-
     /**
      * subscribe to a topic
      * @param   {String}      topic               topic to subscribe
@@ -132,23 +113,22 @@ var PushNotification = function () {
      */
 
   }, {
-    key: 'subscribe',
+    key: "subscribe",
     value: function subscribe(topic, successCallback) {
       var errorCallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
 
       if (typeof errorCallback !== 'function') {
-        console.log('PushNotification.subscribe failure: ' + 'failure parameter not a function');
+        console.log('PushNotification.subscribe failure: failure parameter not a function');
         return;
       }
 
       if (typeof successCallback !== 'function') {
-        console.log('PushNotification.subscribe failure: ' + 'success callback parameter must be a function');
+        console.log('PushNotification.subscribe failure: success callback parameter must be a function');
         return;
       }
 
       exec(successCallback, errorCallback, 'PushNotification', 'subscribe', [topic]);
     }
-
     /**
      * unsubscribe to a topic
      * @param   {String}      topic               topic to unsubscribe
@@ -158,7 +138,7 @@ var PushNotification = function () {
      */
 
   }, {
-    key: 'unsubscribe',
+    key: "unsubscribe",
     value: function unsubscribe(topic, successCallback) {
       var errorCallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
 
@@ -168,22 +148,21 @@ var PushNotification = function () {
       }
 
       if (typeof successCallback !== 'function') {
-        console.log('PushNotification.unsubscribe failure: ' + 'success callback parameter must be a function');
+        console.log('PushNotification.unsubscribe failure: success callback parameter must be a function');
         return;
       }
 
       exec(successCallback, errorCallback, 'PushNotification', 'unsubscribe', [topic]);
     }
-
     /**
      * Call this to set the application icon badge
      */
 
   }, {
-    key: 'setApplicationIconBadgeNumber',
+    key: "setApplicationIconBadgeNumber",
     value: function setApplicationIconBadgeNumber(successCallback) {
       var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      var badge = arguments[2];
+      var badge = arguments.length > 2 ? arguments[2] : undefined;
 
       if (typeof errorCallback !== 'function') {
         console.log('PushNotification.setApplicationIconBadgeNumber failure: failure ' + 'parameter not a function');
@@ -195,15 +174,16 @@ var PushNotification = function () {
         return;
       }
 
-      exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{ badge: badge }]);
+      exec(successCallback, errorCallback, 'PushNotification', 'setApplicationIconBadgeNumber', [{
+        badge: badge
+      }]);
     }
-
     /**
      * Get the application icon badge
      */
 
   }, {
-    key: 'getApplicationIconBadgeNumber',
+    key: "getApplicationIconBadgeNumber",
     value: function getApplicationIconBadgeNumber(successCallback) {
       var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
 
@@ -219,19 +199,18 @@ var PushNotification = function () {
 
       exec(successCallback, errorCallback, 'PushNotification', 'getApplicationIconBadgeNumber', []);
     }
-
     /**
      * Clear all notifications
      */
 
   }, {
-    key: 'clearAllNotifications',
+    key: "clearAllNotifications",
     value: function clearAllNotifications() {
       var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
       var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
 
       if (typeof errorCallback !== 'function') {
-        console.log('PushNotification.clearAllNotifications failure: failure parameter ' + 'not a function');
+        console.log('PushNotification.clearAllNotifications failure: failure parameter not a function');
         return;
       }
 
@@ -241,6 +220,28 @@ var PushNotification = function () {
       }
 
       exec(successCallback, errorCallback, 'PushNotification', 'clearAllNotifications', []);
+    }
+    /**
+     * Clears notifications that have the ID specified.
+     * @param  {Function} [successCallback] Callback function to be called on success.
+     * @param  {Function} [errorCallback] Callback function to be called when an error is encountered.
+     * @param  {Number} id    ID of the notification to be removed.
+     */
+
+  }, {
+    key: "clearNotification",
+    value: function clearNotification() {
+      var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
+      var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+      var id = arguments.length > 2 ? arguments[2] : undefined;
+      var idNumber = parseInt(id, 10);
+
+      if (Number.isNaN(idNumber) || idNumber > Number.MAX_SAFE_INTEGER || idNumber < 0) {
+        console.log('PushNotification.clearNotification failure: id parameter must' + 'be a valid integer.');
+        return;
+      }
+
+      exec(successCallback, errorCallback, 'PushNotification', 'clearNotification', [idNumber]);
     }
     /**
      * Listen for an event.
@@ -256,14 +257,14 @@ var PushNotification = function () {
      */
 
   }, {
-    key: 'on',
+    key: "on",
     value: function on(eventName, callback) {
-      if (!this.handlers.hasOwnProperty(eventName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
         this.handlers[eventName] = [];
       }
+
       this.handlers[eventName].push(callback);
     }
-
     /**
      * Remove event listener.
      *
@@ -272,16 +273,16 @@ var PushNotification = function () {
      */
 
   }, {
-    key: 'off',
+    key: "off",
     value: function off(eventName, handle) {
-      if (this.handlers.hasOwnProperty(eventName)) {
+      if (Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
         var handleIndex = this.handlers[eventName].indexOf(handle);
+
         if (handleIndex >= 0) {
           this.handlers[eventName].splice(handleIndex, 1);
         }
       }
     }
-
     /**
      * Emit an event.
      *
@@ -294,31 +295,32 @@ var PushNotification = function () {
      */
 
   }, {
-    key: 'emit',
+    key: "emit",
     value: function emit() {
-      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
       }
 
       var eventName = args.shift();
 
-      if (!this.handlers.hasOwnProperty(eventName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.handlers, eventName)) {
         return false;
       }
 
-      for (var i = 0, length = this.handlers[eventName].length; i < length; i++) {
+      for (var i = 0, length = this.handlers[eventName].length; i < length; i += 1) {
         var callback = this.handlers[eventName][i];
+
         if (typeof callback === 'function') {
-          callback.apply(undefined, args);
+          callback.apply(void 0, args);
         } else {
-          console.log('event handler: ' + eventName + ' must be a function');
+          console.log("event handler: ".concat(eventName, " must be a function"));
         }
       }
 
       return true;
     }
   }, {
-    key: 'finish',
+    key: "finish",
     value: function finish() {
       var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
       var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
@@ -340,10 +342,10 @@ var PushNotification = function () {
 
   return PushNotification;
 }();
-
 /*!
  * Push Notification Plugin.
  */
+
 
 module.exports = {
   /**
@@ -355,13 +357,20 @@ module.exports = {
    * @param {Object} options
    * @return {PushNotification} instance
    */
-
   init: function init(options) {
     return new PushNotification(options);
   },
-
   hasPermission: function hasPermission(successCallback, errorCallback) {
     exec(successCallback, errorCallback, 'PushNotification', 'hasPermission', []);
+  },
+  createChannel: function createChannel(successCallback, errorCallback, channel) {
+    exec(successCallback, errorCallback, 'PushNotification', 'createChannel', [channel]);
+  },
+  deleteChannel: function deleteChannel(successCallback, errorCallback, channelId) {
+    exec(successCallback, errorCallback, 'PushNotification', 'deleteChannel', [channelId]);
+  },
+  listChannels: function listChannels(successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'listChannels', []);
   },
 
   /**
