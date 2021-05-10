@@ -287,7 +287,7 @@
 
             [[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(handleNotificationSettings:)
-                                                         name:pushPluginApplicationDidBecomeActiveNotification
+                                                         name:daisPushPluginApplicationDidBecomeActiveNotification
                                                        object:nil];
 
 

@@ -12,7 +12,7 @@
 
 static char launchNotificationKey;
 static char coldstartKey;
-NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginApplicationDidBecomeActiveNotification";
+NSString *const daisPushPluginApplicationDidBecomeActiveNotification = @"pushPluginApplicationDidBecomeActiveNotification";
 
 
 @implementation AppDelegate (notification)
@@ -183,7 +183,7 @@ NSString *const pushPluginApplicationDidBecomeActiveNotification = @"pushPluginA
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:pushPluginApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:daisPushPluginApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
